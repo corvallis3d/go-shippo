@@ -21,3 +21,9 @@ func (c *Client) CreateOrder(input *models.OrderInput) (*models.OrderResponse, e
 	err := c.do(http.MethodPost, "/orders/", input, output)
 	return output, err
 }
+
+func (c *Client) GetOrder(input string) (*models.OrderResponse, error) {
+	output := &models.OrderResponse{}
+	err := c.do(http.MethodGet, "/orders/"+input, nil, output)
+	return output, err
+}
