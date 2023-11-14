@@ -26,7 +26,7 @@ func main() {
 
 func getOrder(c *client.Client) *models.OrderResponse {
 	// order by object_id
-	orderId := "ac7551dac822454292fe1026f4924f96"
+	orderId := "123456"
 
 	order, err := c.GetOrder(orderId)
 	if err != nil {
