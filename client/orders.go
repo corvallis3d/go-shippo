@@ -63,3 +63,13 @@ func (c *Client) ListOrders(options *models.OrderListOptions) (*models.OrderList
 	err := c.do(http.MethodGet, url, nil, output)
 	return output, err
 }
+
+// GetPageByURL fetches the results from the specified page URL
+func (c *Client) GetPageByURL(pageURL string) (*models.OrderListResponse, error) {
+	if pageURL == "" {
+		return nil, errors.New("page URL cannot be empty")
+	}
+	output := &models.OrderListResponse{}
+	err := c.do(http.MethodGet, pageURL, nil, output)
+	return output, err
+}
