@@ -2,28 +2,85 @@ package client
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/corvallis3d/go-shippo/models"
 )
 
+// CreateOrder creates a new order with specified details.
 func (c *Client) CreateOrder(input *models.OrderInput) (*models.OrderResponse, error) {
 	if input == nil {
 		return nil, errors.New("nil input")
 	}
-
-	if input.PlacedAt.IsZero() {
-		input.PlacedAt = time.Now()
-	}
-
 	output := &models.OrderResponse{}
 	err := c.do(http.MethodPost, "/orders/", input, output)
 	return output, err
 }
 
-func (c *Client) GetOrder(input string) (*models.OrderResponse, error) {
+// GetOrder retrieves an existing order by its ID.
+func (c *Client) GetOrder(orderID string) (*models.OrderResponse, error) {
+	if orderID == "" {
+		return nil, errors.New("empty order ID")
+	}
 	output := &models.OrderResponse{}
-	err := c.do(http.MethodGet, "/orders/"+input, nil, output)
+	err := c.do(http.MethodGet, fmt.Sprintf("/orders/%s", orderID), nil, output)
+	return output, err
+}
+
+// ListOrders lists all orders with optional filters.
+// Filters for shop app, date range, and order status are supported.
+func (c *Client) ListOrders(options *models.OrderListOptions) (*models.OrderResponse, error) {
+	url := "/orders/"
+	queryParams := []string{}
+	if options != nil {
+		if options.ShopApp != "" {
+			queryParams = append(queryParams, "shop_app="+options.ShopApp)
+		}
+		if !options.StartDate.IsZero() {
+			queryParams = append(queryParams, "start_date="+options.StartDate.Format(time.RFC3339))
+		}
+		if !options.EndDate.IsZero() {
+			queryParams = append(queryParams, "end_date="+options.EndDate.Format(time.RFC3339))
+		}
+		for _, status := range options.OrderStatus {
+			queryParams = append(queryParams, "order_status[]="+status)
+		}
+		if options.Page > 0 {
+			queryParams = append(queryParams, fmt.Sprintf("page=%d", options.Page))
+		}
+		if options.Results > 0 {
+			queryParams = append(queryParams, fmt.Sprintf("results=%d", options.Results))
+		}
+	}
+	if len(queryParams) > 0 {
+		url += "?" + strings.Join(queryParams, "&")
+	}
+
+	output := &models.OrderResponse{}
+	err := c.do(http.MethodGet, url, nil, output)
+	return output, err
+}
+
+// PurchaseLabelForOrder purchases a shipping label for a specific order.
+func (c *Client) PurchaseLabelForOrder(orderID string, shipment models.ShipmentRequest) (*models.TransactionResponse, error) {
+	if orderID == "" {
+		return nil, errors.New("empty order ID")
+	}
+	output := &models.TransactionResponse{}
+	err := c.do(http.MethodPost, "/transactions/", shipment, output)
+	return output, err
+}
+
+// GetPackingSlip retrieves a packing slip link for a specific order.
+// The link expires after 24 hours.
+func (c *Client) GetPackingSlip(orderID string) (*models.PackingSlipResponse, error) {
+	if orderID == "" {
+		return nil, errors.New("empty order ID")
+	}
+	output := &models.PackingSlipResponse{}
+	err := c.do(http.MethodGet, fmt.Sprintf("/orders/%s/packingslip/", orderID), nil, output)
 	return output, err
 }

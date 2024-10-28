@@ -58,3 +58,40 @@ type OrderResponse struct {
 	WeightUnit           string        `json:"weight_unit"`
 	Notes                interface{}   `json:"notes"` // Could be another struct or type based on actual data
 }
+
+// OrderListOptions represents filtering options for listing orders
+type OrderListOptions struct {
+	ShopApp     string    `json:"shop_app,omitempty"`
+	StartDate   time.Time `json:"start_date,omitempty"`
+	EndDate     time.Time `json:"end_date,omitempty"`
+	OrderStatus []string  `json:"order_status,omitempty"`
+	Page        int       `json:"page,omitempty"`
+	Results     int       `json:"results,omitempty"`
+}
+
+// ShipmentRequest represents the structure for purchasing a label for an order
+type ShipmentRequest struct {
+	Shipment struct {
+		AddressFrom Address  `json:"address_from"`
+		AddressTo   string   `json:"address_to"`
+		Parcels     []Parcel `json:"parcels"`
+	} `json:"shipment"`
+	CarrierAccount    string `json:"carrier_account"`
+	ServiceLevelToken string `json:"servicelevel_token"`
+	Order             string `json:"order"`
+}
+
+// TransactionResponse represents the response structure for a label purchase
+type TransactionResponse struct {
+	ObjectID       string `json:"object_id"`
+	LabelURL       string `json:"label_url"`
+	TrackingNumber string `json:"tracking_number"`
+	Status         string `json:"status"`
+}
+
+// PackingSlipResponse represents the structure of a packing slip response
+type PackingSlipResponse struct {
+	SlipURL string    `json:"slip_url"`
+	Created time.Time `json:"created"`
+	Expires time.Time `json:"expires"`
+}
