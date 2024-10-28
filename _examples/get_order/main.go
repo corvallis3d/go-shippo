@@ -26,9 +26,9 @@ func main() {
 
 func getOrder(c *client.Client) *models.OrderResponse {
 	// order by object_id
-	orderId := "1234567"
+	objectID := "1234567"
 
-	order, err := c.GetOrder(orderId)
+	order, err := c.GetOrder(objectID)
 	if err != nil {
 		panic(err)
 	}

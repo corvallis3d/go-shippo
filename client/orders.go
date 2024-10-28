@@ -21,12 +21,12 @@ func (c *Client) CreateOrder(input *models.OrderInput) (*models.OrderResponse, e
 }
 
 // GetOrder retrieves an existing order by its ID.
-func (c *Client) GetOrder(orderID string) (*models.OrderResponse, error) {
-	if orderID == "" {
+func (c *Client) GetOrder(objectID string) (*models.OrderResponse, error) {
+	if objectID == "" {
 		return nil, errors.New("empty order ID")
 	}
 	output := &models.OrderResponse{}
-	err := c.do(http.MethodGet, fmt.Sprintf("/orders/%s", orderID), nil, output)
+	err := c.do(http.MethodGet, fmt.Sprintf("/orders/%s", objectID), nil, output)
 	return output, err
 }
 
@@ -65,8 +65,8 @@ func (c *Client) ListOrders(options *models.OrderListOptions) (*models.OrderResp
 }
 
 // PurchaseLabelForOrder purchases a shipping label for a specific order.
-func (c *Client) PurchaseLabelForOrder(orderID string, shipment models.ShipmentRequest) (*models.TransactionResponse, error) {
-	if orderID == "" {
+func (c *Client) PurchaseLabelForOrder(objectID string, shipment models.ShipmentRequest) (*models.TransactionResponse, error) {
+	if objectID == "" {
 		return nil, errors.New("empty order ID")
 	}
 	output := &models.TransactionResponse{}
@@ -76,11 +76,11 @@ func (c *Client) PurchaseLabelForOrder(orderID string, shipment models.ShipmentR
 
 // GetPackingSlip retrieves a packing slip link for a specific order.
 // The link expires after 24 hours.
-func (c *Client) GetPackingSlip(orderID string) (*models.PackingSlipResponse, error) {
-	if orderID == "" {
+func (c *Client) GetPackingSlip(objectID string) (*models.PackingSlipResponse, error) {
+	if objectID == "" {
 		return nil, errors.New("empty order ID")
 	}
 	output := &models.PackingSlipResponse{}
-	err := c.do(http.MethodGet, fmt.Sprintf("/orders/%s/packingslip/", orderID), nil, output)
+	err := c.do(http.MethodGet, fmt.Sprintf("/orders/%s/packingslip/", objectID), nil, output)
 	return output, err
 }
