@@ -63,24 +63,3 @@ func (c *Client) ListOrders(options *models.OrderListOptions) (*models.OrderList
 	err := c.do(http.MethodGet, url, nil, output)
 	return output, err
 }
-
-// PurchaseLabelForOrder purchases a shipping label for a specific order.
-func (c *Client) PurchaseLabelForOrder(objectID string, shipment models.ShipmentRequest) (*models.TransactionResponse, error) {
-	if objectID == "" {
-		return nil, errors.New("empty order ID")
-	}
-	output := &models.TransactionResponse{}
-	err := c.do(http.MethodPost, "/transactions/", shipment, output)
-	return output, err
-}
-
-// GetPackingSlip retrieves a packing slip link for a specific order.
-// The link expires after 24 hours.
-func (c *Client) GetPackingSlip(objectID string) (*models.PackingSlipResponse, error) {
-	if objectID == "" {
-		return nil, errors.New("empty order ID")
-	}
-	output := &models.PackingSlipResponse{}
-	err := c.do(http.MethodGet, fmt.Sprintf("/orders/%s/packingslip/", objectID), nil, output)
-	return output, err
-}
