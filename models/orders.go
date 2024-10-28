@@ -34,6 +34,14 @@ type LineItem struct {
 	MaxDeliveryTime    time.Time `json:"max_delivery_time"`
 }
 
+// OrderListResponse represents the structure of a paginated response for listing orders
+type OrderListResponse struct {
+	Count    int             `json:"count"`
+	Next     string          `json:"next,omitempty"`
+	Previous string          `json:"previous,omitempty"`
+	Results  []OrderResponse `json:"results"`
+}
+
 type OrderResponse struct {
 	ObjectID             string        `json:"object_id"`
 	ObjectOwner          string        `json:"object_owner"`

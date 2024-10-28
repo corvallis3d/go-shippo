@@ -32,7 +32,7 @@ func (c *Client) GetOrder(objectID string) (*models.OrderResponse, error) {
 
 // ListOrders lists all orders with optional filters.
 // Filters for shop app, date range, and order status are supported.
-func (c *Client) ListOrders(options *models.OrderListOptions) (*models.OrderResponse, error) {
+func (c *Client) ListOrders(options *models.OrderListOptions) (*models.OrderListResponse, error) {
 	url := "/orders/"
 	queryParams := []string{}
 	if options != nil {
@@ -59,7 +59,7 @@ func (c *Client) ListOrders(options *models.OrderListOptions) (*models.OrderResp
 		url += "?" + strings.Join(queryParams, "&")
 	}
 
-	output := &models.OrderResponse{}
+	output := &models.OrderListResponse{}
 	err := c.do(http.MethodGet, url, nil, output)
 	return output, err
 }
