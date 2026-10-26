@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/corvallis3d/go-shippo"
 	"github.com/corvallis3d/go-shippo/client"
@@ -45,7 +46,7 @@ func createOrder(c *client.Client) *models.OrderResponse {
 	item1 := &models.LineItem{
 		ObjectID:   "ID#123456",
 		Title:      "Print1",
-		Sku:        "32456312",
+		SKU:        "32456312",
 		Quantity:   2,
 		TotalPrice: "23.70",
 		Weight:     "5",
@@ -53,9 +54,10 @@ func createOrder(c *client.Client) *models.OrderResponse {
 		WeightUnit: "lb",
 	}
 
-	// create a shipment
+	// create an order
 	orderInput := &models.OrderInput{
-		ToAddress:            toAddress.ObjectID,
+		ToAddress:            *toAddress,
+		PlacedAt:             time.Now(),
 		LineItems:            []models.LineItem{*item1},
 		OrderNumber:          "231442",
 		Currency:             "USD",

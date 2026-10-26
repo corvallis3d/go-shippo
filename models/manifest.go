@@ -16,5 +16,7 @@ type ManifestInput struct {
 type Manifest struct {
 	ManifestInput
 	CommonOutputFields
-	State string `json:"state,omitempty"`
+	State  string   `json:"state,omitempty"` // Legacy field; current responses use Status.
+	Status string   `json:"status,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }

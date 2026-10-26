@@ -62,10 +62,16 @@ const (
 	MassUnitPound    = "lb"
 	MassUnitKiloGram = "kg"
 
-	LabelFileTypePNG    = "PNG"
-	LabelFileTypePDF    = "PDF"
-	LabelFileTypePDF4X6 = "PDF_4X6"
-	LabelFileTypeZPLII  = "ZPLII"
+	LabelFileTypePNG      = "PNG"
+	LabelFileTypePNG23X75 = "PNG_2.3x7.5"
+	LabelFileTypePDF      = "PDF"
+	LabelFileTypePDF23X75 = "PDF_2.3x7.5"
+	LabelFileTypePDF4X6   = "PDF_4x6"
+	LabelFileTypePDF4X8   = "PDF_4x8"
+	LabelFileTypePDFA4    = "PDF_A4"
+	LabelFileTypePDFA5    = "PDF_A5"
+	LabelFileTypePDFA6    = "PDF_A6"
+	LabelFileTypeZPLII    = "ZPLII"
 )
 
 type CommonOutputFields struct {
