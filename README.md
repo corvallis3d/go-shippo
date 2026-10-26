@@ -81,6 +81,13 @@ The core reference remains **2018-02-08**, served at
 The version date identifies the API compatibility contract, not the age of its
 features. Shippo continues adding endpoints and optional fields under that same
 version. This wrapper is checked against the current schema, guides, and changelog.
+The public [documentation MCP](https://docs.goshippo.com/mcp) was also queried for
+schema fields and the latest release notes. It exposes documentation search and
+the published OpenAPI specs without shipping-account access. Its core schema still
+omits some guide-documented additions, such as tracking `include_package_details`,
+so the changelog and linked guides are checked alongside it. Shippo's separate
+account MCP and AI knowledge pack provide operational tools/workflow guidance;
+their tool catalog is not a complete REST API coverage checklist.
 
 | Area | Coverage and corrections |
 | --- | --- |
