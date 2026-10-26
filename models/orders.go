@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // OrderInput represents the structure of an order creation request
 type OrderInput struct {
@@ -44,26 +47,54 @@ type OrderResponse struct {
 	Notes                string        `json:"notes,omitempty"`
 	ShopApp              string        `json:"shop_app,omitempty"`
 	Transactions         []Transaction `json:"transactions,omitempty"`
+	// These response fields are documented in Shippo's API changelog. The
+	// current schema does not define the error payload's structure.
+	ValidationStatus string          `json:"validation_status,omitempty"`
+	Error            json.RawMessage `json:"error,omitempty"`
 }
 
 // OrderListResponse represents the structure of a paginated response for listing orders
 type OrderListResponse struct {
+	Count    int             `json:"count"`
 	Next     string          `json:"next,omitempty"`     // URL to the next page, if available
 	Previous string          `json:"previous,omitempty"` // URL to the previous page, if available
 	Results  []OrderResponse `json:"results"`            // Array of orders in the current page
 }
 
+// MarshalJSON keeps the existing Address-based Go API while sending only the
+// writable address fields expected by order creation.
+func (o OrderInput) MarshalJSON() ([]byte, error) {
+	type orderInput OrderInput
+	wire := struct {
+		orderInput
+		ToAddress   AddressInput  `json:"to_address"`
+		FromAddress *AddressInput `json:"from_address,omitempty"`
+		LineItems   []LineItem    `json:"line_items,omitempty"`
+	}{orderInput: orderInput(o), ToAddress: o.ToAddress.AddressInput}
+	if o.FromAddress != nil {
+		wire.FromAddress = &o.FromAddress.AddressInput
+	}
+	if len(o.LineItems) != 0 {
+		wire.LineItems = append([]LineItem(nil), o.LineItems...)
+		for i := range wire.LineItems {
+			// IDs belong to returned line items, not the create request.
+			wire.LineItems[i].ObjectID = ""
+		}
+	}
+	return json.Marshal(wire)
+}
+
 // LineItem represents an item in an order
 type LineItem struct {
 	ObjectID           string     `json:"object_id,omitempty"`
-	Title              string     `json:"title"`
+	Title              string     `json:"title,omitempty"`
 	VariantTitle       string     `json:"variant_title,omitempty"`
-	SKU                string     `json:"sku"`
-	Quantity           int        `json:"quantity"`
-	TotalPrice         string     `json:"total_price"`
-	Currency           string     `json:"currency"`
-	Weight             string     `json:"weight"`
-	WeightUnit         string     `json:"weight_unit"`
+	SKU                string     `json:"sku,omitempty"`
+	Quantity           int        `json:"quantity,omitempty"`
+	TotalPrice         string     `json:"total_price,omitempty"`
+	Currency           string     `json:"currency,omitempty"`
+	Weight             string     `json:"weight,omitempty"`
+	WeightUnit         string     `json:"weight_unit,omitempty"`
 	ManufactureCountry string     `json:"manufacture_country,omitempty"`
 	MaxShipTime        *time.Time `json:"max_ship_time,omitempty"`
 	MaxDeliveryTime    *time.Time `json:"max_delivery_time,omitempty"`

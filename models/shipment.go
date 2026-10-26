@@ -1,11 +1,16 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 const (
 	ShipmentExtraSignatureConfirmationStandard  = "STANDARD"
 	ShipmentExtraSignatureConfirmationAdult     = "ADULT"
 	ShipmentExtraSignatureConfirmationCertified = "CERTIFIED"
+	ShipmentExtraSignatureConfirmationIndirect  = "INDIRECT"
+	ShipmentExtraSignatureConfirmationCarrier   = "CARRIER_CONFIRMATION"
 
 	ShipmentBillingTypeSender     = "SENDER"
 	ShipmentBillingTypeRecipient  = "RECIPIENT"
@@ -34,7 +39,7 @@ const (
 	ShipmentDangerousGoodsCode06 = "06"
 	ShipmentDangerousGoodsCode07 = "07"
 	ShipmentDangerousGoodsCode08 = "08"
-	ShipmentDangerousGoodsCode09 = "019"
+	ShipmentDangerousGoodsCode09 = "09"
 )
 
 // See https://goshippo.com/docs/reference#shipments
@@ -52,20 +57,97 @@ type ShipmentInput struct {
 }
 
 type ShipmentExtra struct {
-	SignatureConfirmation   string             `json:"signature_confirmation,omitempty"`
-	SaturdayDelivery        bool               `json:"saturday_delivery"`
-	BypassAddressValidation bool               `json:"bypass_address_validation"`
-	RequestRetailRates      bool               `json:"request_retail_rates"`
-	CustomerBranch          string             `json:"customer_branch,omitempty"`
-	Billing                 *ShipmentBilling   `json:"billing,omitempty"`
-	COD                     *ShipmentCOD       `json:"COD,omitempty"`
-	Insurance               *ShipmentInsurance `json:"insurance,omitempty"`
-	USPSSortType            string             `json:"usps_sort_type,omitempty"`
-	USPSEntryFacility       string             `json:"usps_entry_facility,omitempty"`
-	DangerousGoodsCode      string             `json:"dangerous_goods_code,omitempty"`
-	IsReturn                bool               `json:"is_return,omitempty"`
-	Reference1              string             `json:"reference_1,omitempty"`
-	Reference2              string             `json:"reference_2,omitempty"`
+	QRCodeRequested                   bool                        `json:"qr_code_requested,omitempty"`
+	SignatureConfirmation             string                      `json:"signature_confirmation,omitempty"`
+	SaturdayDelivery                  bool                        `json:"saturday_delivery"`
+	BypassAddressValidation           bool                        `json:"bypass_address_validation"`
+	RequestRetailRates                bool                        `json:"request_retail_rates"`
+	CustomerBranch                    string                      `json:"customer_branch,omitempty"`
+	Billing                           *ShipmentBilling            `json:"billing,omitempty"`
+	COD                               *ShipmentCOD                `json:"COD,omitempty"`
+	Insurance                         *ShipmentInsurance          `json:"insurance,omitempty"`
+	USPSSortType                      string                      `json:"usps_sort_type,omitempty"`
+	USPSEntryFacility                 string                      `json:"usps_entry_facility,omitempty"`
+	DangerousGoodsCode                string                      `json:"dangerous_goods_code,omitempty"`
+	IsReturn                          bool                        `json:"is_return,omitempty"`
+	Reference1                        string                      `json:"reference_1,omitempty"`
+	Reference2                        string                      `json:"reference_2,omitempty"`
+	Reference3                        string                      `json:"reference_3,omitempty"`
+	Reference4                        string                      `json:"reference_4,omitempty"`
+	HealthcareHandling                *ShipmentHealthcareHandling `json:"healthcare_handling,omitempty"`
+	CustomerReference                 *ShipmentLabelReference     `json:"customer_reference,omitempty"`
+	PONumber                          *ShipmentLabelReference     `json:"po_number,omitempty"`
+	InvoiceNumber                     *ShipmentLabelReference     `json:"invoice_number,omitempty"`
+	DeptNumber                        *ShipmentLabelReference     `json:"dept_number,omitempty"`
+	RMANumber                         *ShipmentLabelReference     `json:"rma_number,omitempty"`
+	AccountsReceivableCustomerAccount *ShipmentLabelReference     `json:"accounts_receivable_customer_account,omitempty"`
+	AppropriationNumber               *ShipmentLabelReference     `json:"appropriation_number,omitempty"`
+	BillOfLadingNumber                *ShipmentLabelReference     `json:"bill_of_lading_number,omitempty"`
+	CODNumber                         *ShipmentLabelReference     `json:"cod_number,omitempty"`
+	DealerOrderNumber                 *ShipmentLabelReference     `json:"dealer_order_number,omitempty"`
+	FDAProductCode                    *ShipmentLabelReference     `json:"fda_product_code,omitempty"`
+	ManifestNumber                    *ShipmentLabelReference     `json:"manifest_number,omitempty"`
+	ModelNumber                       *ShipmentLabelReference     `json:"model_number,omitempty"`
+	PartNumber                        *ShipmentLabelReference     `json:"part_number,omitempty"`
+	ProductionCode                    *ShipmentLabelReference     `json:"production_code,omitempty"`
+	PurchaseRequestNumber             *ShipmentLabelReference     `json:"purchase_request_number,omitempty"`
+	SalespersonNumber                 *ShipmentLabelReference     `json:"salesperson_number,omitempty"`
+	SerialNumber                      *ShipmentLabelReference     `json:"serial_number,omitempty"`
+	StoreNumber                       *ShipmentLabelReference     `json:"store_number,omitempty"`
+	TransactionReferenceNumber        *ShipmentLabelReference     `json:"transaction_reference_number,omitempty"`
+	DangerousGoods                    *ShipmentDangerousGoods     `json:"dangerous_goods,omitempty"`
+	Alcohol                           *ShipmentAlcohol            `json:"alcohol,omitempty"`
+	DryIce                            *ShipmentDryIce             `json:"dry_ice,omitempty"`
+	AncillaryEndorsement              string                      `json:"ancillary_endorsement,omitempty"`
+	AuthorityToLeave                  *bool                       `json:"authority_to_leave,omitempty"`
+	CarbonNeutral                     bool                        `json:"carbon_neutral,omitempty"`
+	CarrierHubID                      string                      `json:"carrier_hub_id,omitempty"`
+	CarrierHubTravelTime              int                         `json:"carrier_hub_travel_time,omitempty"`
+	ContainerType                     string                      `json:"container_type,omitempty"`
+	CriticalPullTime                  string                      `json:"critical_pull_time,omitempty"`
+	DeliveryInstructions              string                      `json:"delivery_instructions,omitempty"`
+	FulfillmentCenter                 string                      `json:"fulfillment_center,omitempty"`
+	LasershipAttrs                    []string                    `json:"lasership_attrs,omitempty"`
+	LasershipDeclaredValue            string                      `json:"lasership_declared_value,omitempty"`
+	PreferredDeliveryTimeframe        string                      `json:"preferred_delivery_timeframe,omitempty"`
+	Premium                           bool                        `json:"premium,omitempty"`
+	ReturnServiceType                 string                      `json:"return_service_type,omitempty"`
+	USMCAEligible                     bool                        `json:"usmca_eligible,omitempty"`
+}
+
+// ShipmentHealthcareHandling requests a carrier's healthcare handling program.
+// The carrier determines account and service eligibility.
+type ShipmentHealthcareHandling struct {
+	Enabled bool `json:"enabled"`
+}
+
+// ShipmentLabelReference is the reference object used by FedEx and UPS label
+// fields. A nil Prefix retains the carrier default; an empty prefix removes it.
+// Carrier-specific length, format and sorting rules are enforced by Shippo.
+type ShipmentLabelReference struct {
+	Prefix  *string `json:"prefix,omitempty"`
+	Value   string  `json:"value,omitempty"`
+	RefSort *int    `json:"ref_sort,omitempty"`
+}
+
+type ShipmentDangerousGoods struct {
+	Contains           bool                            `json:"contains"`
+	BiologicalMaterial *ShipmentDangerousGoodsContents `json:"biological_material,omitempty"`
+	LithiumBatteries   *ShipmentDangerousGoodsContents `json:"lithium_batteries,omitempty"`
+}
+
+type ShipmentDangerousGoodsContents struct {
+	Contains bool `json:"contains"`
+}
+
+type ShipmentAlcohol struct {
+	ContainsAlcohol bool   `json:"contains_alcohol"`
+	RecipientType   string `json:"recipient_type,omitempty"`
+}
+
+type ShipmentDryIce struct {
+	ContainsDryIce bool   `json:"contains_dry_ice"`
+	Weight         string `json:"weight"` // Kilograms, as specified by Shippo.
 }
 
 type ShipmentCOD struct {
@@ -77,7 +159,7 @@ type ShipmentCOD struct {
 type ShipmentInsurance struct {
 	Amount   string `json:"amount"`
 	Currency string `json:"currency"`
-	Provider string `json:"provider"`
+	Provider string `json:"provider,omitempty"` // Omit for Shippo's third-party insurance.
 	Content  string `json:"content"`
 }
 
@@ -91,6 +173,10 @@ type ShipmentBilling struct {
 // See https://goshippo.com/docs/reference#shipments
 type Shipment struct {
 	CommonOutputFields
+	Metadata           string              `json:"metadata,omitempty"`
+	Extra              *ShipmentExtra      `json:"extra,omitempty"`
+	CarrierAccounts    []string            `json:"carrier_accounts,omitempty"`
+	ShipmentDate       time.Time           `json:"shipment_date,omitempty"`
 	Status             string              `json:"status,omitempty"`
 	AddressFrom        *Address            `json:"address_from,omitempty"`
 	AddressTo          *Address            `json:"address_to,omitempty"`
@@ -100,4 +186,18 @@ type Shipment struct {
 	Rates              []*Rate             `json:"rates,omitempty"`
 	Messages           []*OutputMessage    `json:"messages,omitempty"`
 	Test               bool                `json:"test,omitempty"`
+}
+
+// MarshalJSON omits an unset shipment date so Shippo can use its current-date
+// default. time.Time's zero value is not omitted by encoding/json's omitempty.
+func (s ShipmentInput) MarshalJSON() ([]byte, error) {
+	type shipmentInput ShipmentInput
+	wire := struct {
+		shipmentInput
+		ShipmentDate *time.Time `json:"shipment_date,omitempty"`
+	}{shipmentInput: shipmentInput(s)}
+	if !s.ShipmentDate.IsZero() {
+		wire.ShipmentDate = &s.ShipmentDate
+	}
+	return json.Marshal(wire)
 }

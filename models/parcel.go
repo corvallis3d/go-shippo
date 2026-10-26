@@ -2,10 +2,10 @@ package models
 
 // See https://goshippo.com/docs/reference#parcels
 type ParcelInput struct {
-	Length       string       `json:"length"`
-	Width        string       `json:"width"`
-	Height       string       `json:"height"`
-	DistanceUnit string       `json:"distance_unit"`
+	Length       string       `json:"length,omitempty"`
+	Width        string       `json:"width,omitempty"`
+	Height       string       `json:"height,omitempty"`
+	DistanceUnit string       `json:"distance_unit,omitempty"`
 	Weight       string       `json:"weight"`
 	MassUnit     string       `json:"mass_unit"`
 	Template     string       `json:"template,omitempty"` // https://goshippo.com/docs/reference#parceltemplates
@@ -29,7 +29,7 @@ type ParcelCOD struct {
 type ParcelInsurance struct {
 	Amount   string `json:"amount"`
 	Currency string `json:"currency"`
-	Provider string `json:"provider"`
+	Provider string `json:"provider,omitempty"` // Omit for Shippo's third-party insurance.
 	Content  string `json:"content"`
 }
 

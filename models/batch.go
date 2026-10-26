@@ -23,6 +23,7 @@ type Batch struct {
 	BatchShipments           *BatchShipmentList  `json:"batch_shipments"`
 	LabelURL                 []string            `json:"label_url"`
 	ObjectResults            *BatchObjectResults `json:"object_results"`
+	Test                     bool                `json:"test"`
 }
 
 type BatchShipmentList struct {
@@ -45,12 +46,42 @@ type BatchShipmentInput struct {
 	ServiceLevelToken string `json:"servicelevel_token,omitempty"`
 	Shipment          string `json:"shipment"`
 	Metadata          string `json:"metadata,omitempty"`
+	// ShipmentDetails supplies the nested shipment required by the current API.
+	// When set, it takes precedence over the legacy Shipment ID.
+	ShipmentDetails *ShipmentInput `json:"-"`
 }
 
 // See https://goshippo.com/docs/reference#batches-batchshipments
 type BatchShipment struct {
 	BatchShipmentInput
 	CommonOutputFields
+	Status      string            `json:"status,omitempty"`
 	Transaction string            `json:"transaction"`
 	Messages    []json.RawMessage `json:"messages"` // cannot find format in documentation
+}
+
+// MarshalJSON supports a nested shipment while preserving the legacy ID field.
+func (s BatchShipmentInput) MarshalJSON() ([]byte, error) {
+	type batchShipmentInput BatchShipmentInput
+	var shipment interface{} = s.Shipment
+	if s.ShipmentDetails != nil {
+		shipment = s.ShipmentDetails
+	}
+	return json.Marshal(struct {
+		batchShipmentInput
+		Shipment interface{} `json:"shipment"`
+	}{batchShipmentInput: batchShipmentInput(s), Shipment: shipment})
+}
+
+// MarshalJSON keeps response fields when the embedded request type implements
+// json.Marshaler. Batch shipment responses contain a shipment ID, not a request.
+func (s BatchShipment) MarshalJSON() ([]byte, error) {
+	type batchShipmentInput BatchShipmentInput
+	return json.Marshal(struct {
+		batchShipmentInput
+		CommonOutputFields
+		Status      string            `json:"status,omitempty"`
+		Transaction string            `json:"transaction"`
+		Messages    []json.RawMessage `json:"messages"`
+	}{batchShipmentInput(s.BatchShipmentInput), s.CommonOutputFields, s.Status, s.Transaction, s.Messages})
 }
