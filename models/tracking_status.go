@@ -11,7 +11,7 @@ const (
 	TrackingStatusStatusReturned   = "RETURNED"
 )
 
-// See https://goshippo.com/docs/reference#tracks
+// See https://docs.goshippo.com/api-reference/tracking-status/register-a-tracking-webhook
 type TrackingStatusInput struct {
 	Carrier               string `json:"carrier"`
 	TrackingNumber        string `json:"tracking_number"`
@@ -19,7 +19,7 @@ type TrackingStatusInput struct {
 	IncludePackageDetails bool   `json:"include_package_details,omitempty"`
 }
 
-// See https://goshippo.com/docs/reference#tracks
+// See https://docs.goshippo.com/api-reference/tracking-status/get-a-tracking-status
 type TrackingStatus struct {
 	TrackingStatusInput
 	AddressFrom     *TrackingStatusLocation `json:"address_from,omitempty"`

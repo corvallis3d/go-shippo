@@ -1,6 +1,6 @@
 package models
 
-// See https://goshippo.com/docs/reference#carrier-accounts
+// See https://docs.goshippo.com/api-reference/carrier-accounts/create-a-new-carrier-account
 type CarrierAccountInput struct {
 	Carrier    string                 `json:"carrier"`
 	AccountID  string                 `json:"account_id"`
@@ -8,7 +8,7 @@ type CarrierAccountInput struct {
 	Active     bool                   `json:"active"`
 }
 
-// See https://goshippo.com/docs/reference#carrier-accounts
+// See https://docs.goshippo.com/api-reference/carrier-accounts/retrieve-a-carrier-account
 type CarrierAccount struct {
 	CarrierAccountInput
 	CommonOutputFields

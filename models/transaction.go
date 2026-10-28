@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// See https://goshippo.com/docs/reference#transactions
+// See https://docs.goshippo.com/api-reference/transactions/create-a-shipping-label
 type TransactionInput struct {
 	Rate          string `json:"rate,omitempty"`
 	Order         string `json:"order,omitempty"`
@@ -15,12 +15,11 @@ type TransactionInput struct {
 
 	Shipment       *ShipmentInput `json:"shipment,omitempty"`
 	CarrierAccount string         `json:"carrier_account,omitempty"`
-	// ServerLevelToken selects the service for an instant purchase. The historical
-	// Go field name is retained for compatibility; the JSON key is servicelevel_token.
+	// ServerLevelToken selects the servicelevel_token for an instant purchase.
 	ServerLevelToken string `json:"servicelevel_token,omitempty"`
 }
 
-// See https://goshippo.com/docs/reference#transactions
+// See https://docs.goshippo.com/api-reference/transactions/retrieve-a-shipping-label
 type Transaction struct {
 	TransactionInput
 	CommonOutputFields

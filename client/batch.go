@@ -10,9 +10,8 @@ import (
 	"github.com/corvallis3d/go-shippo/models"
 )
 
-// RetrieveBatch retrieves an existing batch. BatchShipments are displayed 100 at a time.
-// You can iterate through each "page" by specifying non-zero value to page parameter.
-// You can also filter based on BatchShipment status using objectResultsFilter parameter
+// RetrieveBatch retrieves a batch, with up to 100 shipments per page.
+// A nonzero page selects a page; objectResultsFilter selects shipment results.
 func (c *Client) RetrieveBatch(objectID string, page uint, objectResultsFilter string) (*models.Batch, error) {
 	return c.RetrieveBatchContext(context.Background(), objectID, page, objectResultsFilter)
 }
@@ -78,10 +77,8 @@ func (c *Client) RemoveBatchShipmentsFromBatchContext(ctx context.Context, objec
 	return output, err
 }
 
-// PurchaseBatch purchases an existing batch with an ObjectStatus of "VALID".
-// Once you send invoke this function, the batch ObjectStatus will be change to PURCHASING.
-// When all the shipments are purchased, the ObjectStatus will change to PURCHASED
-// and you will receive a batch_purchased webhook indicating that the batch has been purchased.
+// PurchaseBatch purchases a batch whose Status is VALID.
+// The batch moves through PURCHASING to PURCHASED asynchronously.
 func (c *Client) PurchaseBatch(objectID string) (*models.Batch, error) {
 	return c.PurchaseBatchContext(context.Background(), objectID)
 }

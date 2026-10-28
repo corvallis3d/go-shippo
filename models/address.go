@@ -1,12 +1,15 @@
 package models
 
 const (
-	AddressObjectSourceFullyEntered     = "FULLY_ENTERED"
+	// Deprecated: The current API no longer returns object_source.
+	AddressObjectSourceFullyEntered = "FULLY_ENTERED"
+	// Deprecated: The current API no longer returns object_source.
 	AddressObjectSourcePartiallyEntered = "PARTIALLY_ENTERED"
-	AddressObjectSourceValidator        = "VALIDATOR"
+	// Deprecated: The current API no longer returns object_source.
+	AddressObjectSourceValidator = "VALIDATOR"
 )
 
-// See https://goshippo.com/docs/reference#addresses
+// See https://docs.goshippo.com/api-reference/addresses/create-a-new-address
 type AddressInput struct {
 	Name          string `json:"name,omitempty"`
 	Company       string `json:"company,omitempty"`
@@ -25,7 +28,7 @@ type AddressInput struct {
 	Metadata      string `json:"metadata,omitempty"`
 }
 
-// See https://goshippo.com/docs/reference#addresses
+// See https://docs.goshippo.com/api-reference/addresses/create-a-new-address
 type Address struct {
 	AddressInput
 	CommonOutputFields
@@ -34,7 +37,7 @@ type Address struct {
 	ValidationResults *ValidationResults `json:"validation_results"`
 }
 
-// See https://goshippo.com/docs/reference#addresses
+// See https://docs.goshippo.com/api-reference/addresses/validate-an-address
 type ValidationResults struct {
 	IsValid  bool             `json:"is_valid"`
 	Messages []*OutputMessage `json:"messages"`

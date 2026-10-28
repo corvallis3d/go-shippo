@@ -5,6 +5,56 @@ import (
 	"testing"
 )
 
+func TestShipmentParcelRequestShapes(t *testing.T) {
+	parcel := &ParcelInput{Weight: "1", MassUnit: "lb"}
+	for _, test := range []struct {
+		name    string
+		parcels interface{}
+		want    string
+	}{
+		{"ID", "parcel-1", `["parcel-1"]`},
+		{"object", parcel, `[{"weight":"1","mass_unit":"lb"}]`},
+		{"IDs", []string{"parcel-1", "parcel-2"}, `["parcel-1","parcel-2"]`},
+		{"objects", []*ParcelInput{parcel}, `[{"weight":"1","mass_unit":"lb"}]`},
+		{"nil", nil, `null`},
+		{"nil object", (*ParcelInput)(nil), `null`},
+		{"nil slice", []string(nil), `null`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			input := &ShipmentInput{Parcels: test.parcels}
+			before, err := json.Marshal(input.Parcels)
+			if err != nil {
+				t.Fatal(err)
+			}
+			wire := jsonObject(t, input)
+			if got := string(wire["parcels"]); got != test.want {
+				t.Fatalf("parcels = %s, want %s", got, test.want)
+			}
+			after, err := json.Marshal(input.Parcels)
+			if err != nil || string(after) != string(before) {
+				t.Fatalf("marshaling changed caller's parcels: %s -> %s (%v)", before, after, err)
+			}
+		})
+	}
+
+	shipment := &ShipmentInput{Parcels: "parcel-1"}
+	for _, input := range []interface{}{
+		TransactionInput{Shipment: shipment},
+		BatchShipmentInput{ShipmentDetails: shipment},
+	} {
+		wire := jsonObject(t, input)
+		var nested struct {
+			Parcels []string `json:"parcels"`
+		}
+		if err := json.Unmarshal(wire["shipment"], &nested); err != nil {
+			t.Fatal(err)
+		}
+		if len(nested.Parcels) != 1 || nested.Parcels[0] != "parcel-1" {
+			t.Fatalf("%T nested parcels = %v", input, nested.Parcels)
+		}
+	}
+}
+
 func TestShipmentCustomsDeclarationResponseShapes(t *testing.T) {
 	var shipment Shipment
 	for _, test := range []struct {

@@ -42,7 +42,7 @@ const (
 	ShipmentDangerousGoodsCode09 = "09"
 )
 
-// See https://goshippo.com/docs/reference#shipments
+// See https://docs.goshippo.com/api-reference/shipments/create-a-new-shipment
 type ShipmentInput struct {
 	AddressFrom        interface{}    `json:"address_from"`                  // string or *AddressInput
 	AddressTo          interface{}    `json:"address_to"`                    // string or *AddressInput
@@ -170,7 +170,7 @@ type ShipmentBilling struct {
 	Country string `json:"country"`
 }
 
-// See https://goshippo.com/docs/reference#shipments
+// See https://docs.goshippo.com/api-reference/shipments/retrieve-a-shipment
 type Shipment struct {
 	CommonOutputFields
 	Metadata           string              `json:"metadata,omitempty"`
@@ -188,10 +188,18 @@ type Shipment struct {
 	Test               bool                `json:"test,omitempty"`
 }
 
-// MarshalJSON omits an unset shipment date so Shippo can use its current-date
-// default. time.Time's zero value is not omitted by encoding/json's omitempty.
+// MarshalJSON normalizes single parcels to arrays and omits an unset shipment
+// date. time.Time's zero value is not omitted by encoding/json's omitempty.
 func (s ShipmentInput) MarshalJSON() ([]byte, error) {
 	type shipmentInput ShipmentInput
+	switch parcels := s.Parcels.(type) {
+	case string:
+		s.Parcels = []string{parcels}
+	case *ParcelInput:
+		if parcels != nil {
+			s.Parcels = []*ParcelInput{parcels}
+		}
+	}
 	wire := struct {
 		shipmentInput
 		ShipmentDate *time.Time `json:"shipment_date,omitempty"`

@@ -18,9 +18,15 @@ const (
 	CustomsEEL_PFC_NOEEI_30_36   = "NOEEI_30_36"
 	CustomsEEL_PFC_AES_ITN       = "AES_ITN"
 
-	CustomsIncotermDDP = "DDP"
-	CustomsIncotermDDU = "DDU"
+	CustomsIncotermDDP  = "DDP"
+	CustomsIncotermDDU  = "DDU"
+	CustomsIncotermFCA  = "FCA"
+	CustomsIncotermDAP  = "DAP"
+	CustomsIncotermEDAP = "eDAP"
+
+	// Deprecated: Use one of Shippo's documented Incoterms.
 	CustomsIncotermCPT = "CPT"
+	// Deprecated: Use one of Shippo's documented Incoterms.
 	CustomsIncotermCIP = "CIP"
 
 	CustomsB13AFiledElectronically = "FILED_ELECTRONICALLY"
@@ -33,7 +39,7 @@ const (
 	CustomsTaxIDTypeARN  = "ARN"
 )
 
-// See https://goshippo.com/docs/reference#customsitems
+// See https://docs.goshippo.com/api-reference/customs-items/create-a-new-customs-item
 type CustomsItemInput struct {
 	Description              string `json:"description"`
 	Quantity                 int    `json:"quantity"`
@@ -52,7 +58,7 @@ type CustomsItemInput struct {
 	Metadata                 string `json:"metadata,omitempty"`
 }
 
-// See https://goshippo.com/docs/reference#customsitems
+// See https://docs.goshippo.com/api-reference/customs-items/retrieve-a-customs-item
 type CustomsItem struct {
 	CustomsItemInput
 	CommonOutputFields
@@ -60,7 +66,7 @@ type CustomsItem struct {
 	Test        bool   `json:"test"`
 }
 
-// See https://goshippo.com/docs/reference#customsdeclarations
+// See https://docs.goshippo.com/api-reference/customs-declarations/create-a-new-customs-declaration
 type CustomsDeclarationInput struct {
 	CertifySigner          string                         `json:"certify_signer"`
 	Certify                bool                           `json:"certify"`
@@ -110,7 +116,7 @@ type CustomsTaxIdentification struct {
 	Type   string `json:"type,omitempty"`
 }
 
-// See https://goshippo.com/docs/reference#customsdeclarations
+// See https://docs.goshippo.com/api-reference/customs-declarations/retrieve-a-customs-declaration
 type CustomsDeclaration struct {
 	CustomsDeclarationInput
 	CommonOutputFields

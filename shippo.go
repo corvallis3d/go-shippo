@@ -4,8 +4,9 @@ import "github.com/corvallis3d/go-shippo/client"
 
 const (
 	APIVersion20140211 = "2014-02-11"
+	// Deprecated: Use APIVersion20161025.
 	APIVesrion20161025 = "2016-10-25"
-	APIVersion20161025 = APIVesrion20161025 // Correctly spelled alias; retain the original for compatibility.
+	APIVersion20161025 = APIVesrion20161025
 	APIVersion20170329 = "2017-03-29"
 	APIVersion20180208 = "2018-02-08"
 )

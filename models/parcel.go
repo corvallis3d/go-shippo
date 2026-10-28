@@ -1,6 +1,6 @@
 package models
 
-// See https://goshippo.com/docs/reference#parcels
+// See https://docs.goshippo.com/api-reference/parcels/create-a-new-parcel
 type ParcelInput struct {
 	Length       string       `json:"length,omitempty"`
 	Width        string       `json:"width,omitempty"`
@@ -8,7 +8,7 @@ type ParcelInput struct {
 	DistanceUnit string       `json:"distance_unit,omitempty"`
 	Weight       string       `json:"weight"`
 	MassUnit     string       `json:"mass_unit"`
-	Template     string       `json:"template,omitempty"` // https://goshippo.com/docs/reference#parceltemplates
+	Template     string       `json:"template,omitempty"` // https://docs.goshippo.com/api-reference/parcel-templates/index
 	Extra        *ParcelExtra `json:"extra,omitempty"`
 	Metadata     string       `json:"metadata,omitempty"`
 }
@@ -33,7 +33,7 @@ type ParcelInsurance struct {
 	Content  string `json:"content"`
 }
 
-// See https://goshippo.com/docs/reference#parcels
+// See https://docs.goshippo.com/api-reference/parcels/retrieve-an-existing-parcel
 type Parcel struct {
 	ParcelInput
 	CommonOutputFields

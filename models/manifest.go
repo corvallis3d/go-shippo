@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-// See https://goshippo.com/docs/reference#manifests
+// See https://docs.goshippo.com/api-reference/manifests/create-a-new-manifest
 type ManifestInput struct {
 	CarrierAccount string    `json:"carrier_account,omitempty"`
 	ShipmentDate   time.Time `json:"shipment_date,omitempty"`
@@ -12,11 +12,12 @@ type ManifestInput struct {
 	Async          bool      `json:"async"`
 }
 
-// See https://goshippo.com/docs/reference#manifests
+// See https://docs.goshippo.com/api-reference/manifests/retrieve-a-manifest
 type Manifest struct {
 	ManifestInput
 	CommonOutputFields
-	State  string   `json:"state,omitempty"` // Legacy field; current responses use Status.
+	// Deprecated: Use Status for the current API.
+	State  string   `json:"state,omitempty"`
 	Status string   `json:"status,omitempty"`
 	Errors []string `json:"errors,omitempty"`
 }

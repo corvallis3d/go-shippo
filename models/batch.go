@@ -2,7 +2,7 @@ package models
 
 import "encoding/json"
 
-// See https://goshippo.com/docs/reference#batches
+// See https://docs.goshippo.com/api-reference/batches/create-a-batch
 type BatchInput struct {
 	DefaultCarrierAccount    string                `json:"default_carrier_account,omitempty"`
 	DefaultServiceLevelToken string                `json:"default_servicelevel_token,omitempty"`
@@ -11,9 +11,8 @@ type BatchInput struct {
 	BatchShipments           []*BatchShipmentInput `json:"batch_shipments"`
 }
 
-// See https://goshippo.com/docs/reference#batches
+// See https://docs.goshippo.com/api-reference/batches/retrieve-a-batch
 type Batch struct {
-	//BatchInput // seems that output format is slightly different
 	CommonOutputFields
 	Status                   string              `json:"status,omitempty"`
 	DefaultCarrierAccount    string              `json:"default_carrier_account,omitempty"`
@@ -40,7 +39,7 @@ type BatchObjectResults struct {
 	CreationSucceeded int `json:"creation_succeeded"`
 }
 
-// See https://goshippo.com/docs/reference#batches-batchshipments
+// See https://docs.goshippo.com/api-reference/batches/add-shipments-to-a-batch
 type BatchShipmentInput struct {
 	CarrierAccount    string `json:"carrier_account,omitempty"`
 	ServiceLevelToken string `json:"servicelevel_token,omitempty"`
@@ -51,13 +50,13 @@ type BatchShipmentInput struct {
 	ShipmentDetails *ShipmentInput `json:"-"`
 }
 
-// See https://goshippo.com/docs/reference#batches-batchshipments
+// See https://docs.goshippo.com/api-reference/batches/retrieve-a-batch
 type BatchShipment struct {
 	BatchShipmentInput
 	CommonOutputFields
 	Status      string            `json:"status,omitempty"`
 	Transaction string            `json:"transaction"`
-	Messages    []json.RawMessage `json:"messages"` // cannot find format in documentation
+	Messages    []json.RawMessage `json:"messages"`
 }
 
 // MarshalJSON supports a nested shipment while preserving the legacy ID field.
