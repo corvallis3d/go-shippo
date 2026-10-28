@@ -93,8 +93,7 @@ go vet ./...
 go build ./...
 ```
 
-CI also checks formatting and compiles the example programs. Tests use local HTTP
-servers and JSON fixtures; no Shippo credentials are required. Releases use Git tags.
+Tests use local HTTP servers and JSON fixtures; no Shippo credentials are required.
 
 ## License
 

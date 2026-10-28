@@ -209,3 +209,30 @@ func (s ShipmentInput) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(wire)
 }
+
+// UnmarshalJSON accepts either a customs declaration ID or an expanded object.
+func (s *Shipment) UnmarshalJSON(data []byte) error {
+	type shipment Shipment
+	decoded := shipment(*s)
+	wire := struct {
+		*shipment
+		CustomsDeclaration json.RawMessage `json:"customs_declaration"`
+	}{shipment: &decoded}
+	if err := json.Unmarshal(data, &wire); err != nil {
+		return err
+	}
+	if len(wire.CustomsDeclaration) != 0 {
+		decoded.CustomsDeclaration = nil
+		if wire.CustomsDeclaration[0] == '"' {
+			var id string
+			if err := json.Unmarshal(wire.CustomsDeclaration, &id); err != nil {
+				return err
+			}
+			decoded.CustomsDeclaration = &CustomsDeclaration{CommonOutputFields: CommonOutputFields{ObjectID: id}}
+		} else if err := json.Unmarshal(wire.CustomsDeclaration, &decoded.CustomsDeclaration); err != nil {
+			return err
+		}
+	}
+	*s = Shipment(decoded)
+	return nil
+}
